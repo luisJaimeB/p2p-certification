@@ -1,0 +1,30 @@
+{
+  "name": "types-credits-v",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@placetopay/flagicons-vue": "^0.1.0",
+    "vue": "^3.4.35",
+    "vue-router": "^4.4.5"
+  },
+  "devDependencies": {
+    "@placetopay/spartan-vue": "^1.1.4",
+    "@tailwindcss/forms": "^0.5.9",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.9",
+    "vite": "^5.4.0"
+  }
+}
