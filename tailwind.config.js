@@ -3,14 +3,12 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
-    "node_modules/@placetopay/spartan-vue/dist/*.js",
   ],
   theme: {
     extend: {},
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('@placetopay/spartan-vue/plugin'),
   ],
 }
 
