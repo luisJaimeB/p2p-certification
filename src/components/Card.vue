@@ -11,7 +11,7 @@
             <p class="text-gray-500">
             {{ descripcion }}
             </p>
-            <SButton @click="downloadCSV">Download</SButton>
+            <button @click="downloadCSV">Download</button>
         </div>
 
         </div>
@@ -19,8 +19,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-import { SButton, SCard } from '@placetopay/spartan-vue';
 
 // Definir las props
 const props = defineProps({

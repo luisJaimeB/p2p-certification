@@ -19,33 +19,33 @@
             </div>
             <div class="hidden md:flex md:space-x-10 list-none">
                 <li>
-                    <RouterLink to="/bcr" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">BCR
+                    <RouterLink to="/pago-basico" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
+                        target="">Pago Básico
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/davivienda" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">Davivienda
+                        target="">Tokenizacion
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/ecuador" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">Ecuador
+                        target="">Recurrencia
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/uruguay" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">Uruguay
+                        target="">API Gateway
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/honduras" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">Honduras
+                        target="">API Link de Pagos
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/belize" class="text-base font-normal text-gray-500 list-none hover:text-gray-900"
-                        target="">Belize
+                        target="">Plugin
                     </RouterLink>
                 </li>
             </div>

@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router';
-import '@placetopay/spartan-vue/style.css';
 import './style.css'
 import App from './App.vue';
 import Welcome from './components/Welcome.vue';
@@ -10,22 +9,22 @@ const routes = [
     path: '/', component: Welcome,
   },
   {
-    path: '/bcr', component: () => import('./pages/Bcr.vue'),
+    path: '/pago-basico', component: () => import('./pages/PagoBasico.vue'),
   },
   {
-    path: '/honduras', component: () => import('./pages/Honduras.vue'),
+    path: '/tokenizacion', component: () => import('./pages/Honduras.vue'),
   },
   {
-    path: '/ecuador', component: () => import('./pages/Ecuador.vue'),
+    path: '/recurrencia', component: () => import('./pages/Ecuador.vue'),
   },
   {
-    path: '/davivienda', component: () => import('./pages/Davivienda.vue'),
+    path: '/plugin', component: () => import('./pages/Davivienda.vue'),
   },
   {
-    path: '/belize', component: () => import('./pages/Belize.vue'),
+    path: '/api-gateway', component: () => import('./pages/Belize.vue'),
   },
   {
-    path: '/uruguay', component: () => import('./pages/Uruguay.vue'),
+    path: '/api-link-pago', component: () => import('./pages/Uruguay.vue'),
   },
   {
     path: '/:pathMatch(.*)*',

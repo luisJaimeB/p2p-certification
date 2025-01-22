@@ -5,7 +5,7 @@
         <div class="w-full max-w-4xl rounded overflow-hidden shadow-lg">
           <!-- Input para cargar archivo -->
           <div class="mx-auto max-w-xs mb-4">
-            <label for="example1" class="mb-1 block text-sm font-medium text-gray-700">Upload file</label>
+            <label for="example1" class="mb-1 block text-sm font-medium text-gray-700">Transacción aprobada</label> <br>
             <div class="flex items-center mt-2">
               <!-- Input de archivo -->
               <input
