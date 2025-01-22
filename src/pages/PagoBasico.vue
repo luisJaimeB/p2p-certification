@@ -1,47 +1,86 @@
 <template>
   <DefaultLayout>
-    <div class="container mx-auto py-8">
-      <div class="flex justify-center px-3 py-3">
-        <div class="w-full max-w-4xl rounded overflow-hidden shadow-lg">
-          <!-- Input para cargar archivo -->
-          <div class="mx-auto max-w-xs mb-4">
-            <label for="example1" class="mb-1 block text-sm font-medium text-gray-700">Transacción aprobada</label> <br>
-            <div class="flex items-center mt-2">
-              <!-- Input de archivo -->
-              <input
-                id="example1"
-                type="file"
-                @change="handleFileChange"
-                class="block w-full text-sm rounded-none file:border-0 file:bg-teal-500 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-teal-700 focus:outline-none disabled:pointer-events-none disabled:opacity-60 file:rounded-l-md"
-              />
-              <!-- Botón para procesar, alineado a la derecha -->
+    <div class="container mx-auto py-8 px-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Generar PDF para certificarte</h2>
+      
+      <!-- Campos de texto adicionales -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">País</label>
+          <input v-model="country" type="text" class="w-full p-2 border rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Comercio</label>
+          <input v-model="commerce" type="text" class="w-full p-2 border rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">URL de notificación</label>
+          <input v-model="notificationUrl" type="text" class="w-full p-2 border rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">URL del sitio</label>
+          <input v-model="siteUrl" type="text" class="w-full p-2 border rounded-md">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="field in fields" :key="field.id" class="bg-white shadow-md rounded-lg overflow-hidden">
+          <div class="p-4">
+            <div class="flex flex-col h-full">
+              <label :for="`file-${field.id}`" class="mb-2 block text-sm font-medium text-gray-700">
+                {{ field.label }}
+              </label>
+              <div class="relative mb-4 flex-grow">
+                <template v-if="field.preview">
+                  <div class="relative aspect-video">
+                    <img :src="field.preview" alt="Vista previa" class="w-full h-full object-cover rounded-md" />
+                    <button
+                      @click="removeFile(field.id)"
+                      class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 focus:outline-none"
+                    >
+                      X
+                    </button>
+                  </div>
+                </template>
+                <template v-else>
+                  <div
+                    class="border-2 border-dashed border-gray-300 rounded-md p-4 text-center cursor-pointer"
+                    @click="triggerFileInput(field.id)"
+                  >
+                    <p class="text-gray-500">Haga clic para subir o arrastre un archivo aquí</p>
+                  </div>
+                </template>
+                <input
+                  :ref="(el) => setFileInputRef(el, field.id)"
+                  :id="`file-${field.id}`"
+                  type="file"
+                  class="hidden"
+                  @change="(e) => handleImageUpload(field.id, e)"
+                  accept="image/*,application/pdf"
+                />
+              </div>
               <button
-                @click="processFile"
-                class="ml-auto bg-teal-500 text-white font-semibold py-2 px-4 rounded-r-md hover:bg-teal-700 focus:outline-none"
+                @click="triggerFileInput(field.id)"
+                class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
               >
-                Procesar
+                {{ field.file ? 'Cambiar archivo' : 'Seleccionar archivo' }}
               </button>
             </div>
           </div>
-
-          <!-- Bloque pre para mostrar el JSON -->
-          <div class="relative p-4">
-            <button
-              @click="copyToClipboard"
-              class="absolute right-0 top-0 text-white h-6 w-6 mr-2"
-              fill="currentColor"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M192 0c-41.8 0-77.4 26.7-90.5 64L64 64C28.7 64 0 92.7 0 128L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64l-37.5 0C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/>
-              </svg>
-            </button>
-  
-            <!-- Pre para mostrar el JSON generado -->
-            <pre ref="preElement" class="text-gray-700 text-base mt-8 bg-gray-100 p-4 rounded max-h-96 overflow-y-auto">
-              {{ formattedJson }}
-            </pre>
-          </div>
         </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <button 
+          @click="generatePDF" 
+          :disabled="!hasFiles"
+          :class="[
+            'font-bold py-3 px-8 rounded transition duration-300 ease-in-out',
+            hasFiles ? 'bg-teal-500 hover:bg-teal-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          ]"
+        >
+          Procesar todos los archivos
+        </button>
       </div>
     </div>
   </DefaultLayout>
@@ -49,97 +88,139 @@
 
 <script setup>
 import DefaultLayout from '../layouts/DefaultLayout.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { jsPDF } from 'jspdf';
 
-const preElement = ref(null);
-const selectedFile = ref(null);
-const csvData = ref([]);
-const jsonResult = ref({ include: [] }); // Almacenamos el resultado del JSON generado
-const formattedJson = ref(""); // Para mostrar el JSON formateado en el <pre>
+// Variables reactivas
+const country = ref('');
+const commerce = ref('');
+const notificationUrl = ref('');
+const siteUrl = ref('');
 
-// Función para manejar el cambio de archivo
-const handleFileChange = (event) => {
+const fields = ref([
+  { id: 1, label: 'Tiempo expiración', file: null, preview: null },
+  { id: 2, label: 'Transacción aprobada', file: null, preview: null },
+  { id: 3, label: 'Reintento de transacción', file: null, preview: null },
+  { id: 4, label: 'Transacción pendiente', file: null, preview: null },
+]);
+
+// Computed property para verificar si hay archivos cargados
+const hasFiles = computed(() => {
+  return fields.value.some(field => field.preview !== null);
+});
+
+// Referencias a los inputs de archivo usando un Map
+const fileInputRefs = new Map();
+
+// Función para establecer las referencias
+const setFileInputRef = (el, id) => {
+  if (el) {
+    fileInputRefs.set(id, el);
+  }
+};
+
+// Manejar carga de imágenes
+const handleImageUpload = (id, event) => {
   const file = event.target.files[0];
   if (file) {
-    selectedFile.value = file;
-    console.log("Archivo seleccionado:", file.name);
-  } else {
-    console.error("No se seleccionó ningún archivo.");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const updatedFields = fields.value.map((field) =>
+        field.id === id
+          ? { ...field, file, preview: e.target.result }
+          : field
+      );
+      fields.value = updatedFields;
+    };
+    reader.readAsDataURL(file);
   }
 };
 
-// Función para procesar el archivo cuando se hace clic en el botón
-const processFile = () => {
-  if (!selectedFile.value) {
-    console.error("No hay archivo seleccionado para procesar.");
-    return;
+// Disparar el input de archivo
+const triggerFileInput = (id) => {
+  const input = fileInputRefs.get(id);
+  if (input) {
+    input.click();
   }
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const text = e.target.result;
-    processCSV(text);
-  };
-  reader.readAsText(selectedFile.value);
 };
 
-const processCSV = (text) => {
-  const rows = text.split("\n");
-  const result = rows.slice(1).map((row) => row.split(";")); // Saltamos la primera fila
-  
-  const jsonResultTemp = {
-    include: [
-      {
-        ranges: [],
-        credits: []
-      }
-    ]
-  };
+// Generar el PDF
+const generatePDF = async () => {
+  try {
+    const pdf = new jsPDF();
+    let yPosition = 20;
+    
+    // Agregar texto de los campos
+    pdf.setFontSize(16);
+    if (country.value) {
+      pdf.text(`País: ${country.value}`, 20, yPosition);
+      yPosition += 10;
+    }
+    
+    if (commerce.value) {
+      pdf.text(`Comercio: ${commerce.value}`, 20, yPosition);
+      yPosition += 10;
+    }
+    
+    if (notificationUrl.value) {
+      pdf.setFontSize(12);
+      pdf.text(`URL de notificación: ${notificationUrl.value}`, 20, yPosition);
+      yPosition += 10;
+    }
+    
+    if (siteUrl.value) {
+      pdf.text(`URL del sitio: ${siteUrl.value}`, 20, yPosition);
+      yPosition += 20;
+    }
 
-  const binRangesSet = new Set();
-  const processedCredits = new Set();
+    // Procesar cada imagen
+    for (const field of fields.value) {
+      if (field.preview) {
+        // Agregar título de la imagen
+        pdf.setFontSize(14);
+        pdf.text(field.label, 20, yPosition);
+        yPosition += 10;
 
-  result.forEach((row) => {
-    if (row.length >= 8) {
-      const [terminalNumber, merchantCode, description, bin, start, end, franchise, binName] = row;
+        // Agregar la imagen
+        const imgWidth = 170; // Ancho fijo para la imagen
+        const imgHeight = 100; // Alto fijo para la imagen
 
-      const binKey = `${bin}-${start}-${end}`;
-      if (!binRangesSet.has(binKey)) {
-        jsonResultTemp.include[0].ranges.push({
-          bin,
-          start,
-          end
-        });
-        binRangesSet.add(binKey);
-      }
+        // Verificar si necesitamos una nueva página
+        if (yPosition + imgHeight > pdf.internal.pageSize.height - 20) {
+          pdf.addPage();
+          yPosition = 20;
+        }
 
-      const creditKey = `${merchantCode}-${description}`;
-      if (!processedCredits.has(creditKey)) {
-        const installment = description.includes("6 cuotas") ? 6 : 3;
-        const code = installment === 6 ? "06BCR" : "03BCR";
-        jsonResultTemp.include[0].credits.push({
-          code,
-          description,
-          installment,
-          merchantCode,
-          terminalNumber
-        });
-        processedCredits.add(creditKey);
+        try {
+          await pdf.addImage(
+            field.preview,
+            'JPEG',
+            20,
+            yPosition,
+            imgWidth,
+            imgHeight,
+            undefined,
+            'FAST'
+          );
+          yPosition += imgHeight + 20; // Espacio después de la imagen
+        } catch (error) {
+          console.error(`Error al agregar imagen ${field.label}:`, error);
+        }
       }
     }
-  });
 
-  jsonResult.value = jsonResultTemp;
-  formattedJson.value = JSON.stringify(jsonResultTemp, null, 2); // Actualiza el valor que se mostrará en el <pre>
+    // Guardar el PDF
+    pdf.save('certificacion.pdf');
+  } catch (error) {
+    console.error('Error al generar el PDF:', error);
+    alert('Hubo un error al generar el PDF. Por favor, intente nuevamente.');
+  }
 };
 
-const copyToClipboard = () => {
-  navigator.clipboard.writeText(formattedJson.value).then(() => {
-    alert('Texto copiado al portapapeles');
-  });
+// Eliminar archivo
+const removeFile = (id) => {
+  fields.value = fields.value.map((field) =>
+    field.id === id ? { ...field, file: null, preview: null } : field
+  );
 };
 </script>
-
-<style scoped>
-/* Opcionalmente, puedes ajustar más detalles de estilo si es necesario */
-</style>
