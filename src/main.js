@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router';
+import "preline/preline";
 import './style.css'
 import App from './App.vue';
 import Welcome from './components/Welcome.vue';
@@ -32,11 +33,16 @@ const routes = [
   }
 ]
 
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+router.afterEach(() => {
+  if (window.preline && typeof window.preline.init === 'function') {
+    window.preline.init();
+  }
+});
 
 const app = createApp(App)
 app.use(router)
