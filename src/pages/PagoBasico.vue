@@ -169,7 +169,7 @@
       <div class="mt-8 text-center">
      <div class="mt-8 text-center">
         <button 
-          @click="generatePDF" 
+          @click="generate" 
           :disabled="!canProcess"
           :class="[ 
             'font-bold py-3 px-8 rounded transition duration-300 ease-in-out',
@@ -188,7 +188,7 @@
 <script setup>
 import DefaultLayout from '../layouts/DefaultLayout.vue';
 import { ref, computed } from 'vue';
-import { jsPDF } from 'jspdf';
+import { generatePDF } from "../utils/pdfGenerator.js";
 
 
 // Variables reactivas
@@ -292,81 +292,8 @@ const triggerFileInput = (id) => {
 };
 
 // Generar el PDF
-const generatePDF = async () => {
-  try {
-    const pdf = new jsPDF();
-    let yPosition = 20;
-    
-    // Agregar texto de los campos
-    pdf.setFontSize(16);
-    if (country.value) {
-      pdf.text(`País: ${country.value}`, 20, yPosition);
-      yPosition += 10;
-    }
-    
-    if (commerce.value) {
-      pdf.text(`Comercio: ${commerce.value}`, 20, yPosition);
-      yPosition += 10;
-    }
-    
-    if (notificationUrl.value) {
-      pdf.setFontSize(12);
-      pdf.text(`URL de notificación: ${notificationUrl.value}`, 20, yPosition);
-      yPosition += 10;
-    }
-    
-    if (siteUrl.value) {
-      pdf.text(`URL del sitio: ${siteUrl.value}`, 20, yPosition);
-      yPosition += 20;
-    }
-
-    if (email.value) {
-      pdf.text(`Correo electronico: ${email.value}`, 20, yPosition);
-      yPosition += 20;
-    }
-
-    // Procesar cada imagen
-    for (const field of fields.value) {
-      if (field.preview) {
-        // Agregar título de la imagen
-        pdf.setFontSize(14);
-        pdf.text(field.label, 20, yPosition);
-        yPosition += 10;
-
-        // Agregar la imagen
-        const imgWidth = 170; // Ancho fijo para la imagen
-        const imgHeight = 100; // Alto fijo para la imagen
-
-        // Verificar si necesitamos una nueva página
-        if (yPosition + imgHeight > pdf.internal.pageSize.height - 20) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-
-        try {
-          await pdf.addImage(
-            field.preview,
-            'JPEG',
-            20,
-            yPosition,
-            imgWidth,
-            imgHeight,
-            undefined,
-            'FAST'
-          );
-          yPosition += imgHeight + 20; // Espacio después de la imagen
-        } catch (error) {
-          console.error(`Error al agregar imagen ${field.label}:`, error);
-        }
-      }
-    }
-
-    // Guardar el PDF
-    pdf.save('certificacion.pdf');
-  } catch (error) {
-    console.error('Error al generar el PDF:', error);
-    alert('Hubo un error al generar el PDF. Por favor, intente nuevamente.');
-  }
+const generate = async () => {
+  await generatePDF(country.value, commerce.value, notificationUrl.value, siteUrl.value, email.value, fields.value);
 };
 
 // Eliminar archivo
