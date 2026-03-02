@@ -1,17 +1,15 @@
 <template>
-  <Navbar />
-  <div class="flex flex-col min-h-screen">
-    <div class="flex-grow">
-      <main>
-        <slot></slot>
-      </main>
-    </div>
-    <Footer />
-  </div>
+	<div class="min-h-screen bg-orange-100/15">
+		<Header /> 
+		<main>
+			<slot></slot>
+		</main>
+		<Footer />
+	</div>
 </template>
 
 <script setup>
-import Navbar from '../components/Navbar.vue';
+import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 </script>
 
